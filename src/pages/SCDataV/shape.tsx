@@ -1,19 +1,15 @@
-import {
-  forwardRef,
-  useImperativeHandle,
-  useLayoutEffect,
-  useRef,
-} from "react";
+import { useImperativeHandle, useLayoutEffect, useRef, type Ref } from "react";
 import { Box2, Float32BufferAttribute, Mesh, ShapeGeometry } from "three";
 import type { Args } from "@react-three/fiber";
 
 export type ShapeProps = Omit<React.JSX.IntrinsicElements["mesh"], "args"> & {
+  ref?: Ref<Mesh>;
   args?: Args<typeof ShapeGeometry>;
   bbox: Box2;
 };
 
-function Shape(props: ShapeProps, ref: React.ForwardedRef<Mesh>) {
-  const { args, bbox, children, ...meshProps } = props;
+function Shape(props: ShapeProps) {
+  const { ref, args, bbox, children, ...meshProps } = props;
   const meshRef = useRef<Mesh>(null!);
 
   useImperativeHandle(ref, () => meshRef.current);
@@ -46,4 +42,4 @@ function Shape(props: ShapeProps, ref: React.ForwardedRef<Mesh>) {
   );
 }
 
-export default forwardRef(Shape);
+export default Shape;

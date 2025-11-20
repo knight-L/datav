@@ -1,10 +1,4 @@
-import React, {
-  type ForwardRefRenderFunction,
-  forwardRef,
-  useEffect,
-  useImperativeHandle,
-  useRef,
-} from "react";
+import React, { type Ref, useEffect, useImperativeHandle, useRef } from "react";
 import * as echarts from "echarts/core";
 import { CanvasRenderer } from "echarts/renderers";
 import styled from "styled-components";
@@ -19,6 +13,7 @@ const Wrapper = styled.div`
 `;
 
 export interface ChartProps {
+  ref?: Ref<echarts.EChartsType>;
   option: echarts.EChartsCoreOption;
   use: Parameters<typeof echarts.use>[0];
   notMerge?: boolean;
@@ -27,17 +22,14 @@ export interface ChartProps {
   theme?: string | object | undefined;
 }
 
-const Chart: ForwardRefRenderFunction<echarts.EChartsType, ChartProps> = (
-  props,
-  ref
-) => {
+function Chart(props: ChartProps) {
   const chartBox = useRef<HTMLDivElement>(null);
   const chart = useRef<echarts.EChartsType | null>(null);
   const size = useSize(chartBox);
 
   echarts.use(props.use);
 
-  useImperativeHandle(ref, () => chart.current!);
+  useImperativeHandle(props.ref, () => chart.current!);
 
   useEffect(() => {
     chart.current = echarts.init(chartBox.current as HTMLElement);
@@ -62,6 +54,6 @@ const Chart: ForwardRefRenderFunction<echarts.EChartsType, ChartProps> = (
   }, [props.option, props.notMerge, props.lazyUpdate]);
 
   return <Wrapper ref={chartBox} style={props.style} />;
-};
+}
 
-export default forwardRef(Chart);
+export default Chart;
