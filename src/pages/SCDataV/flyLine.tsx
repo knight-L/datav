@@ -31,8 +31,8 @@ export default function FlyLine({ projection }: { projection: GeoProjection }) {
     scOutlineData.features.map((line) => {
       line.geometry.coordinates[0].map((coords) => {
         v3Arr = coords.map((ll) => {
-          const [x, y] = projection(ll as [number, number]) ?? [];
-          return new Vector3(x ?? 0, y ?? 0, 0.49);
+          const [x, y] = projection(ll as [number, number])!;
+          return new Vector3(x, -y, 0.49);
         });
       });
     });
@@ -88,7 +88,7 @@ export default function FlyLine({ projection }: { projection: GeoProjection }) {
   });
 
   return (
-    <object3D position={[0, 0, -0.51]}>
+    <object3D position={[0, 0, 0.01]}>
       <points geometry={geometry.current}>
         <pointsMaterial
           transparent

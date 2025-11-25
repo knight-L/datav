@@ -22,7 +22,6 @@ export default function BaseMap({ projection }: { projection: GeoProjection }) {
   const [texture1, texture2] = useTexture([textureMap, scNormalMap], (tex) =>
     tex.forEach((el) => {
       el.wrapS = el.wrapT = RepeatWrapping;
-      el.flipY = false;
     })
   );
 
@@ -32,19 +31,19 @@ export default function BaseMap({ projection }: { projection: GeoProjection }) {
     const bbox = new Box2();
 
     const toV2 = (coord: number[]) => {
-      const [x = 0, y = 0] = projection(coord as [number, number]) ?? [];
-      const projected = new Vector2(x, y);
+      const [x, y] = projection(coord as [number, number])!;
+      const projected = new Vector2(x, -y);
       bbox.expandByPoint(projected);
       return projected;
     };
 
     data.features.forEach((feature) => {
-      const [x, y] =
-        projection(feature.properties.centroid ?? feature.properties.center) ??
-        [];
+      const [x, y] = projection(
+        feature.properties.centroid ?? feature.properties.center
+      )!;
       citys.push({
         name: feature.properties.name,
-        center: new Vector3(x, y),
+        center: new Vector3(x, -y),
       });
 
       feature.geometry.coordinates.forEach((polygonSet) => {
@@ -64,15 +63,10 @@ export default function BaseMap({ projection }: { projection: GeoProjection }) {
   }, [projection]);
 
   return (
-    <group renderOrder={0} position={[0, 0, -0.01]}>
+    <group renderOrder={0} position={[0, 0, 0.51]}>
       {regions.map((reg, i) => (
         <group key={i}>
-          <ShapeBox
-            bbox={bbox}
-            args={[new Shape(reg)]}
-            // onPointerOver={() => meshRef.current?.position.setZ(-0.3)}
-            // onPointerOut={() => meshRef.current?.position.setZ(0)}
-          >
+          <ShapeBox bbox={bbox} args={[new Shape(reg)]}>
             <meshStandardMaterial
               map={texture1}
               normalMap={texture2}
@@ -83,14 +77,14 @@ export default function BaseMap({ projection }: { projection: GeoProjection }) {
           </ShapeBox>
 
           <Line
-            position={[0, 0, -0.01]}
+            position={[0, 0, 0.01]}
             points={reg}
             linewidth={1}
             color="#ffffff"
           />
         </group>
       ))}
-      <group position={[0, 0, -0.1]}>
+      <group position={[0, 0, 0.1]}>
         {citys.map((item, index) => {
           return (
             <Billboard key={"city_" + index} position={item.center}>

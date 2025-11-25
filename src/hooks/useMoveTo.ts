@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react";
+import { useRef, useLayoutEffect } from "react";
 import { gsap } from "gsap";
 
 type Direction = "toBottom" | "toTop" | "toLeft" | "toRight";
@@ -21,7 +21,7 @@ const useMoveTo = function <T = null>(
     tweenRef.current?.reverse();
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (eleRef.current) {
       const transformFrom = {
         toTop: `translate(0px, 100%)`,

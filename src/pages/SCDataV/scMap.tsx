@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useLayoutEffect, useMemo } from "react";
 import { useThree } from "@react-three/fiber";
 import { geoMercator } from "d3-geo";
 import { gsap } from "gsap";
@@ -18,14 +18,14 @@ export default function SCMap() {
     return geoMercator()
       .center(data.features[0].properties.centroid)
       .scale(80)
-      .translate([0, 0]);
+      .translate([1.5, 0]);
   }, []);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const tween = gsap.fromTo(
       camera.position,
-      { x: 15, y: 5, z: 5 },
-      { duration: 1.5, x: 10, y: 8, z: 0, ease: "sine.inOut" }
+      { x: -5, y: 5, z: 15 },
+      { duration: 1.5, x: 0, y: 8, z: 10, ease: "sine.inOut" }
     );
 
     return () => {
@@ -34,7 +34,7 @@ export default function SCMap() {
   }, [camera]);
 
   return (
-    <group position={[0, 0.5, -1.5]} rotation={[Math.PI / 2, 0, Math.PI * 1.5]}>
+    <group rotation={[-Math.PI / 2, 0, 0]}>
       <BaseMap projection={projection} />
 
       <OutLine projection={projection} />

@@ -23,15 +23,15 @@ export function OutLineAnimated() {
     uRiseTime: IUniform<number>;
     uRiseColor: IUniform<Color>;
   }>({
-    uRiseTime: { value: 0.5 },
+    uRiseTime: { value: -0.8 },
     uRiseColor: { value: new Color(controls.background1) },
   });
 
   useFrame(() => {
     uniformsRef.current.uRiseTime.value =
-      uniformsRef.current.uRiseTime.value <= -0.8
-        ? 0.5
-        : uniformsRef.current.uRiseTime.value - 0.003;
+      uniformsRef.current.uRiseTime.value >= 0.5
+        ? -0.8
+        : uniformsRef.current.uRiseTime.value + 0.003;
   });
 
   return (
@@ -104,14 +104,11 @@ export default function OutLine({ projection }: { projection: GeoProjection }) {
             args={[
               new Shape(
                 coordinates.map((coord) => {
-                  const [x, y] = projection(coord as [number, number]) ?? [];
-                  return new Vector2(x, y);
+                  const [x, y] = projection(coord as [number, number])!;
+                  return new Vector2(x, -y);
                 })
               ),
-              {
-                depth: 0.5,
-                bevelEnabled: false,
-              },
+              { depth: 0.5, bevelEnabled: false },
             ]}>
             <OutLineAnimated />
           </Extrude>
