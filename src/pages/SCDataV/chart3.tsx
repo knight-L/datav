@@ -47,7 +47,7 @@ export default function Chart3() {
             lineStyle: {
               width: 1,
               type: "dotted",
-              color: "#618dd3",
+              color: "#6E918C",
             },
           },
         },
