@@ -23,7 +23,8 @@
     "react-router": "^7.9.6",
     "styled-components": "^6.1.19",
     "three": "^0.181.1",
-    "topojson-client": "^3.1.0"
+    "topojson-client": "^3.1.0",
+    "zustand": "^5.0.8"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",
