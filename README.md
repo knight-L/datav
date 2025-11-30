@@ -22,7 +22,7 @@
 - **构建工具**: Vite (Rolldown 版本)
 - **3D 可视化**: Three.js + @react-three/fiber + @react-three/drei
 - **数据可视化**: ECharts
-- **地理数据处理**: D3-geo + topojson-client
+- **地理数据处理**: D3-geo
 - **动画库**: GSAP
 - **样式库**: Styled-components
 - **调试工具**: Leva
