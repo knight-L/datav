@@ -1,8 +1,8 @@
-import { useEffect, useLayoutEffect } from "react";
+import { useEffect, useRef } from "react";
 import styled from "styled-components";
-import autofit from "autofit.js";
 import { useMapStyleStore } from "@/stores";
 import useMoveTo from "@/hooks/useMoveTo";
+import AutoFit from "@/components/autoFit";
 import Button from "@/components/button";
 import Chart1 from "./chart1";
 import Chart2 from "./chart2";
@@ -11,22 +11,12 @@ import Chart4 from "./chart4";
 
 import bg from "@/assets/card_bg.jpg";
 
-const Wrapper = styled.div`
-  position: relative;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 100;
-  display: flex;
-  flex-direction: column;
-
-  &::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    background: radial-gradient(transparent 60%, black);
-  }
+const Radial = styled.div`
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(transparent 60%, black);
+  transition: opacity 0.8s;
 `;
 
 const GridWrapper = styled.div`
@@ -118,6 +108,7 @@ const Github = styled.a.attrs({
 `;
 
 export default function Content() {
+  const radialRef = useRef<HTMLDivElement>(null!);
   const topBox = useMoveTo("toBottom", 0.6, 1);
   const leftBox = useMoveTo("toRight", 0.8, 1.5);
   const leftBox1 = useMoveTo("toRight", 0.8, 1.5);
@@ -127,14 +118,6 @@ export default function Content() {
 
   const togglePureMode = useMapStyleStore((s) => s.togglePureMode);
   const toggleMapStyle = useMapStyleStore((s) => s.toggleMapStyle);
-
-  useLayoutEffect(() => {
-    autofit.init({ el: "#datav" });
-
-    return () => {
-      autofit.off();
-    };
-  }, []);
 
   useEffect(() => {
     let initial = true;
@@ -149,12 +132,14 @@ export default function Content() {
           leftBox1.restart(initial);
           rightBox.restart(initial);
           rightBox1.restart(initial);
+          radialRef.current.style.setProperty("opacity", "1");
         } else {
           topBox.reverse();
           leftBox.reverse();
           leftBox1.reverse();
           rightBox.reverse();
           rightBox1.reverse();
+          radialRef.current.style.setProperty("opacity", "0");
         }
       },
       { fireImmediately: true }
@@ -169,7 +154,8 @@ export default function Content() {
   }, []);
 
   return (
-    <Wrapper id="datav">
+    <AutoFit>
+      <Radial ref={radialRef} />
       <TitleWrapper ref={topBox.ref}>
         <Title>经济运行监测</Title>
         <Github href="https://github.com/knight-L/datav" target="_blank" />
@@ -197,6 +183,6 @@ export default function Content() {
           <Button onClick={togglePureMode}>纯净模式</Button>
         </BottomBox>
       </GridWrapper>
-    </Wrapper>
+    </AutoFit>
   );
 }
